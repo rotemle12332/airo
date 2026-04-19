@@ -1,0 +1,324 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&display=swap");
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Airo Design System
+ * - Premium, minimalist, soft "concierge" feel
+ * - Heavy corner rounding (24px+), Airo Blue accent
+ * - Adaptive light (airy) / dark (charcoal luxury)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 8px);
+  --radius-2xl: calc(var(--radius) + 16px);
+  --radius-3xl: calc(var(--radius) + 24px);
+  --radius-4xl: calc(var(--radius) + 32px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-glow: var(--primary-glow);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --shadow-airo: 0 24px 60px -20px color-mix(in oklab, var(--primary) 30%, transparent);
+  --shadow-soft: 0 8px 32px -8px oklch(0 0 0 / 0.08);
+  --shadow-elevated: 0 16px 48px -16px oklch(0 0 0 / 0.12);
+}
+
+:root {
+  /* 24px base radius — soft luxury */
+  --radius: 1.5rem;
+
+  /* Light: airy white + light-grey layers */
+  --background: oklch(0.99 0.003 250);
+  --foreground: oklch(0.18 0.02 260);
+
+  --surface: oklch(0.97 0.005 250);
+  --surface-elevated: oklch(1 0 0);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.02 260);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.02 260);
+
+  /* Airo Blue */
+  --primary: oklch(0.58 0.18 250);
+  --primary-foreground: oklch(0.99 0.003 250);
+  --primary-glow: oklch(0.72 0.16 240);
+
+  --secondary: oklch(0.95 0.01 250);
+  --secondary-foreground: oklch(0.22 0.02 260);
+
+  --muted: oklch(0.95 0.008 250);
+  --muted-foreground: oklch(0.5 0.02 260);
+
+  --accent: oklch(0.94 0.04 245);
+  --accent-foreground: oklch(0.32 0.12 250);
+
+  --destructive: oklch(0.6 0.22 27);
+  --destructive-foreground: oklch(0.99 0.003 250);
+
+  --success: oklch(0.7 0.15 155);
+  --success-foreground: oklch(0.12 0.02 160);
+
+  --border: oklch(0.92 0.008 250);
+  --input: oklch(0.94 0.008 250);
+  --ring: oklch(0.58 0.18 250);
+
+  --chart-1: oklch(0.58 0.18 250);
+  --chart-2: oklch(0.7 0.15 155);
+  --chart-3: oklch(0.75 0.16 75);
+  --chart-4: oklch(0.62 0.2 320);
+  --chart-5: oklch(0.65 0.18 30);
+
+  --sidebar: oklch(0.99 0.003 250);
+  --sidebar-foreground: oklch(0.18 0.02 260);
+  --sidebar-primary: oklch(0.58 0.18 250);
+  --sidebar-primary-foreground: oklch(0.99 0.003 250);
+  --sidebar-accent: oklch(0.95 0.01 250);
+  --sidebar-accent-foreground: oklch(0.22 0.02 260);
+  --sidebar-border: oklch(0.92 0.008 250);
+  --sidebar-ring: oklch(0.58 0.18 250);
+}
+
+.dark {
+  /* Dark: deep charcoal / midnight luxury */
+  --background: oklch(0.14 0.015 260);
+  --foreground: oklch(0.97 0.005 250);
+
+  --surface: oklch(0.18 0.018 260);
+  --surface-elevated: oklch(0.22 0.02 260);
+
+  --card: oklch(0.2 0.018 260);
+  --card-foreground: oklch(0.97 0.005 250);
+
+  --popover: oklch(0.2 0.018 260);
+  --popover-foreground: oklch(0.97 0.005 250);
+
+  --primary: oklch(0.7 0.17 245);
+  --primary-foreground: oklch(0.12 0.02 260);
+  --primary-glow: oklch(0.78 0.15 235);
+
+  --secondary: oklch(0.26 0.02 260);
+  --secondary-foreground: oklch(0.97 0.005 250);
+
+  --muted: oklch(0.24 0.018 260);
+  --muted-foreground: oklch(0.7 0.015 250);
+
+  --accent: oklch(0.3 0.06 250);
+  --accent-foreground: oklch(0.92 0.04 245);
+
+  --destructive: oklch(0.7 0.2 22);
+  --destructive-foreground: oklch(0.99 0.003 250);
+
+  --success: oklch(0.75 0.15 155);
+  --success-foreground: oklch(0.12 0.02 160);
+
+  --border: oklch(1 0 0 / 0.08);
+  --input: oklch(1 0 0 / 0.12);
+  --ring: oklch(0.7 0.17 245);
+
+  --chart-1: oklch(0.7 0.17 245);
+  --chart-2: oklch(0.75 0.15 155);
+  --chart-3: oklch(0.78 0.16 75);
+  --chart-4: oklch(0.7 0.2 320);
+  --chart-5: oklch(0.7 0.18 30);
+
+  --sidebar: oklch(0.18 0.018 260);
+  --sidebar-foreground: oklch(0.97 0.005 250);
+  --sidebar-primary: oklch(0.7 0.17 245);
+  --sidebar-primary-foreground: oklch(0.12 0.02 260);
+  --sidebar-accent: oklch(0.26 0.02 260);
+  --sidebar-accent-foreground: oklch(0.97 0.005 250);
+  --sidebar-border: oklch(1 0 0 / 0.08);
+  --sidebar-ring: oklch(0.7 0.17 245);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: light dark;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display",
+      "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  [dir="rtl"] body {
+    font-family: "Heebo", -apple-system, BlinkMacSystemFont, "Inter", system-ui,
+      sans-serif;
+  }
+
+  .font-serif-display {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-feature-settings: "lnum" 1, "kern" 1;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Airo utility classes */
+@layer utilities {
+  .airo-gradient {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary) 0%,
+      var(--color-primary-glow) 100%
+    );
+  }
+  .airo-gradient-text {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary) 0%,
+      var(--color-primary-glow) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .airo-glow {
+    box-shadow: var(--shadow-airo);
+  }
+  .airo-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .airo-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+  .airo-thinking {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-primary) 30%, transparent),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: airo-shimmer 1.6s ease-in-out infinite;
+  }
+  .airo-rise { animation: airo-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .airo-fade { animation: airo-fade 0.4s ease-out both; }
+  .airo-pop { animation: airo-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  .airo-float { animation: airo-float 6s ease-in-out infinite; }
+  .airo-pulse-glow { animation: airo-pulse-glow 2.4s ease-in-out infinite; }
+  .airo-press { transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+  .airo-press:active { transform: scale(0.96); }
+
+  /* — 23 new animation utilities — */
+  .airo-slide-up { animation: airo-slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .airo-slide-down { animation: airo-slide-down 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .airo-slide-left { animation: airo-slide-left 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .airo-slide-right { animation: airo-slide-right 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .airo-zoom-in { animation: airo-zoom-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .airo-zoom-out { animation: airo-zoom-out 0.4s ease-out both; }
+  .airo-blur-in { animation: airo-blur-in 0.6s ease-out both; }
+  .airo-tilt-in { animation: airo-tilt-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .airo-flip-in { animation: airo-flip-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; perspective: 800px; }
+  .airo-bounce-in { animation: airo-bounce-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  .airo-rotate-in { animation: airo-rotate-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .airo-wiggle { animation: airo-wiggle 0.5s ease-in-out; }
+  .airo-shake { animation: airo-shake 0.4s ease-in-out; }
+  .airo-heartbeat { animation: airo-heartbeat 1.4s ease-in-out infinite; }
+  .airo-spin-slow { animation: airo-spin 8s linear infinite; }
+  .airo-orbit { animation: airo-orbit 12s linear infinite; }
+  .airo-typewriter { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 2px solid currentColor; animation: airo-typing 2.4s steps(30,end) both, airo-caret 0.7s step-end infinite; }
+  .airo-gradient-pan { background-size: 200% 200%; animation: airo-gradient-pan 8s ease infinite; }
+  .airo-skeleton { background: linear-gradient(90deg, color-mix(in oklab, var(--color-muted) 60%, transparent), color-mix(in oklab, var(--color-primary) 18%, transparent), color-mix(in oklab, var(--color-muted) 60%, transparent)); background-size: 200% 100%; animation: airo-shimmer 1.4s linear infinite; }
+  .airo-magnet { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease; }
+  .airo-magnet:hover { transform: translateY(-3px) scale(1.015); }
+  .airo-tilt:hover { transform: perspective(800px) rotateX(2deg) rotateY(-2deg) translateY(-2px); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); }
+  .airo-shine { position: relative; overflow: hidden; }
+  .airo-shine::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%); transform: translateX(-100%); transition: transform 0.7s cubic-bezier(0.22,1,0.36,1); pointer-events: none; }
+  .airo-shine:hover::after { transform: translateX(100%); }
+  .airo-ring-pulse { position: relative; }
+  .airo-ring-pulse::before { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 50%, transparent); animation: airo-ring 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+  .airo-3d-press { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .airo-3d-press:active { transform: translateY(2px); box-shadow: 0 0 0 0 transparent; }
+}
+
+@keyframes airo-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes airo-rise { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes airo-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes airo-pop { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes airo-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes airo-pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 35%, transparent); } 50% { box-shadow: 0 0 0 12px color-mix(in oklab, var(--color-primary) 0%, transparent); } }
+@keyframes airo-slide-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes airo-slide-down { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes airo-slide-left { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes airo-slide-right { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes airo-zoom-in { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+@keyframes airo-zoom-out { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(1.15); } }
+@keyframes airo-blur-in { from { opacity: 0; filter: blur(12px); } to { opacity: 1; filter: blur(0); } }
+@keyframes airo-tilt-in { from { opacity: 0; transform: perspective(800px) rotateX(-12deg) translateY(20px); } to { opacity: 1; transform: perspective(800px) rotateX(0) translateY(0); } }
+@keyframes airo-flip-in { from { opacity: 0; transform: rotateY(90deg); } to { opacity: 1; transform: rotateY(0); } }
+@keyframes airo-bounce-in { 0% { opacity: 0; transform: scale(0.5); } 60% { opacity: 1; transform: scale(1.05); } 100% { transform: scale(1); } }
+@keyframes airo-rotate-in { from { opacity: 0; transform: rotate(-8deg) scale(0.95); } to { opacity: 1; transform: rotate(0) scale(1); } }
+@keyframes airo-wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+@keyframes airo-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes airo-heartbeat { 0%, 100% { transform: scale(1); } 14%, 42% { transform: scale(1.08); } 28% { transform: scale(0.96); } }
+@keyframes airo-spin { to { transform: rotate(360deg); } }
+@keyframes airo-orbit { from { transform: rotate(0) translateX(8px) rotate(0); } to { transform: rotate(360deg) translateX(8px) rotate(-360deg); } }
+@keyframes airo-typing { from { width: 0; } to { width: 100%; } }
+@keyframes airo-caret { 50% { border-color: transparent; } }
+@keyframes airo-gradient-pan { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes airo-ring { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 50%, transparent); } 100% { box-shadow: 0 0 0 14px color-mix(in oklab, var(--color-primary) 0%, transparent); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .airo-rise, .airo-fade, .airo-pop, .airo-float, .airo-pulse-glow, .airo-thinking,
+  .airo-slide-up, .airo-slide-down, .airo-slide-left, .airo-slide-right,
+  .airo-zoom-in, .airo-zoom-out, .airo-blur-in, .airo-tilt-in, .airo-flip-in,
+  .airo-bounce-in, .airo-rotate-in, .airo-wiggle, .airo-shake, .airo-heartbeat,
+  .airo-spin-slow, .airo-orbit, .airo-typewriter, .airo-gradient-pan,
+  .airo-skeleton, .airo-ring-pulse::before, .airo-shine::after {
+    animation: none !important;
+  }
+}
