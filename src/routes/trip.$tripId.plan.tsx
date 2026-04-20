@@ -134,15 +134,17 @@ function PlanPage() {
     }
   };
 
-  // Auto-fetch suggestions when entering a new stage (once preferences + trip are loaded)
+  // Auto-fetch suggestions when entering a new stage — but only after the
+  // on-device model is loaded.
   useEffect(() => {
     if (!trip || !preferences) return;
+    if (!localAgent.isReady) return;
     if (autoFetchedRef.current[stage]) return;
     if (optionsByStage[stage].length > 0) return;
     autoFetchedRef.current[stage] = true;
     void requestSuggestions({ text: "" }, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, trip, preferences]);
+  }, [stage, trip, preferences, localAgent.isReady]);
 
   const isAdded = (optId: string) =>
     items.some((i) => i.payload && (i.payload as Record<string, unknown>).option_id === optId);
