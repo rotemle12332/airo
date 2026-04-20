@@ -260,48 +260,50 @@ function PlanPage() {
           </div>
         )}
 
-        {/* Drawer trigger */}
-        <div className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto]">
-          <AiroDrawer
-            stage={stage}
-            open={drawerOpen}
-            onOpenChange={setDrawerOpen}
-            thinking={thinking}
-            onSubmit={(input) => {
-              void requestSuggestions(input);
-            }}
-            trigger={
-              <button className="group flex w-full items-center justify-between rounded-3xl border border-dashed border-border bg-surface p-5 text-start transition-colors hover:border-primary/50">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full airo-gradient text-primary-foreground">
-                    <Sparkles className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <div className="text-sm font-semibold">{t("drawer.title")}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {stage === "flights"
-                        ? t("drawer.placeholder")
-                        : stage === "hotels"
-                          ? t("drawer.placeholder.hotel")
-                          : t("drawer.placeholder.attraction")}
+        {/* Drawer trigger — only after model is ready */}
+        {localAgent.isReady && (
+          <div className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto] airo-fade">
+            <AiroDrawer
+              stage={stage}
+              open={drawerOpen}
+              onOpenChange={setDrawerOpen}
+              thinking={thinking}
+              onSubmit={(input) => {
+                void requestSuggestions(input);
+              }}
+              trigger={
+                <button className="group flex w-full items-center justify-between rounded-3xl border border-dashed border-border bg-surface p-5 text-start transition-colors hover:border-primary/50">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full airo-gradient text-primary-foreground">
+                      <Sparkles className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <div className="text-sm font-semibold">{t("drawer.title")}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {stage === "flights"
+                          ? t("drawer.placeholder")
+                          : stage === "hotels"
+                            ? t("drawer.placeholder.hotel")
+                            : t("drawer.placeholder.attraction")}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </button>
-            }
-          />
-          <Button
-            variant="outline"
-            onClick={refreshSuggestions}
-            disabled={thinking}
-            className="rounded-3xl h-auto px-5"
-            title="Get new AI picks"
-          >
-            <Wand2 className="me-2 h-4 w-4" />
-            New picks
-          </Button>
-        </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                </button>
+              }
+            />
+            <Button
+              variant="outline"
+              onClick={refreshSuggestions}
+              disabled={thinking}
+              className="rounded-3xl h-auto px-5"
+              title="Get new AI picks"
+            >
+              <Wand2 className="me-2 h-4 w-4" />
+              New picks
+            </Button>
+          </div>
+        )}
 
         {/* Thinking shimmer */}
         {thinking && options.length === 0 && (
