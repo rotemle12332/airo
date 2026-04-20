@@ -110,6 +110,10 @@ const en: Dict = {
   "common.back": "Back",
   "common.loading": "Loading",
   "common.error": "Something went wrong",
+
+  "local.title": "On-device AI ready",
+  "local.subtitle": "Llama 3.2 running privately on your device",
+  "local.thinking": "Generating on your device",
 };
 
 const he: Dict = {
@@ -215,6 +219,10 @@ const he: Dict = {
   "common.back": "חזרה",
   "common.loading": "טוען",
   "common.error": "משהו השתבש",
+
+  "local.title": "ה-AI המקומי מוכן",
+  "local.subtitle": "Llama 3.2 רץ בפרטיות על המכשיר שלך",
+  "local.thinking": "יוצר על המכשיר שלך",
 };
 
 const dictionaries: Record<Lang, Dict> = { en, he };

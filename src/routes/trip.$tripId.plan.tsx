@@ -1,15 +1,18 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Sparkles, ArrowRight, Trash2, ExternalLink, Wand2 } from "lucide-react";
+import { Sparkles, ArrowRight, Trash2, ExternalLink, Wand2, Cpu } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { StageProgress, type Stage } from "@/components/StageProgress";
 import { LiveTotal } from "@/components/LiveTotal";
 import { OptionCard, type AiroOption } from "@/components/OptionCard";
 import { AiroDrawer } from "@/components/AiroDrawer";
+import { ModelLoader } from "@/components/ModelLoader";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
+import { useLocalAgent } from "@/hooks/useLocalAgent";
+import { DEFAULT_LOCAL_MODEL } from "@/lib/local-agent";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import type { AiroPreferences } from "./trip.new";
@@ -79,74 +82,69 @@ function PlanPage() {
   const currency = items[0]?.currency ?? "USD";
   const options = optionsByStage[stage];
 
+  // On-device AI agent (replaces edge function calls).
+  const localAgent = useLocalAgent(DEFAULT_LOCAL_MODEL);
+
   const requestSuggestions = async (
     input: { text: string; imageDataUrl?: string },
-    auto = false,
+    _auto = false,
   ) => {
+    if (!localAgent.isReady) {
+      toast.info("Activate the on-device AI first");
+      return;
+    }
+    if (input.imageDataUrl) {
+      // Image input is not supported by the small on-device model — let the
+      // user know but still continue with the text portion.
+      toast.message("Image input is ignored on the on-device model — using your text only.");
+    }
     setThinking(true);
     setOptionsByStage((prev) => ({ ...prev, [stage]: [] }));
     try {
-      const { data, error } = await supabase.functions.invoke("airo-suggest", {
-        body: {
-          stage,
-          text: input.text,
-          image_data_url: input.imageDataUrl,
-          auto,
-          preferences,
-          trip: {
-            origin: trip?.origin,
-            start_date: trip?.start_date,
-            end_date: trip?.end_date,
-            traveler_count: trip?.traveler_count,
-            destination: preferences?.destination,
-            existing_items: items.map((i) => ({
-              type: i.type,
-              title: i.title,
-              start_date: i.start_date,
-              end_date: i.end_date,
-            })),
-          },
+      const opts = await localAgent.generate({
+        stage,
+        text: input.text,
+        trip: {
+          origin: trip?.origin,
+          destination: preferences?.destination,
+          start_date: trip?.start_date,
+          end_date: trip?.end_date,
+          traveler_count: trip?.traveler_count,
+        },
+        preferences: {
+          styles: preferences?.styles,
+          vibe: preferences?.vibe,
+          companion: preferences?.companion,
+          with_kids: preferences?.with_kids,
+          group_size: preferences?.group_size ?? trip?.traveler_count ?? 1,
+          notes: preferences?.notes,
+          budget_min: preferences?.budget_min,
+          budget_max: preferences?.budget_max,
         },
       });
-      if (error) throw error;
-      const opts = (data?.options ?? []) as AiroOption[];
-      setOptionsByStage((prev) => ({ ...prev, [stage]: opts }));
-      // Generate images in background per option
-      void Promise.all(
-        opts.map((o, idx) =>
-          supabase.functions
-            .invoke("airo-image", {
-              body: { prompt: imagePromptFor(stage, o), id: o.id },
-            })
-            .then(({ data: imgData }) => {
-              if (imgData?.image_url) {
-                setOptionsByStage((prev) => ({
-                  ...prev,
-                  [stage]: prev[stage].map((c, i) =>
-                    i === idx ? { ...c, image_url: imgData.image_url } : c,
-                  ),
-                }));
-              }
-            })
-            .catch(() => {}),
-        ),
-      );
+      setOptionsByStage((prev) => ({
+        ...prev,
+        [stage]: opts as AiroOption[],
+      }));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "AI request failed");
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "On-device AI failed");
     } finally {
       setThinking(false);
     }
   };
 
-  // Auto-fetch suggestions when entering a new stage (once preferences + trip are loaded)
+  // Auto-fetch suggestions when entering a new stage — but only after the
+  // on-device model is loaded.
   useEffect(() => {
     if (!trip || !preferences) return;
+    if (!localAgent.isReady) return;
     if (autoFetchedRef.current[stage]) return;
     if (optionsByStage[stage].length > 0) return;
     autoFetchedRef.current[stage] = true;
     void requestSuggestions({ text: "" }, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, trip, preferences]);
+  }, [stage, trip, preferences, localAgent.isReady]);
 
   const isAdded = (optId: string) =>
     items.some((i) => i.payload && (i.payload as Record<string, unknown>).option_id === optId);
@@ -241,48 +239,71 @@ function PlanPage() {
           <StageProgress current={stage} onSelect={setStage} />
         </div>
 
-        {/* Drawer trigger */}
-        <div className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto]">
-          <AiroDrawer
-            stage={stage}
-            open={drawerOpen}
-            onOpenChange={setDrawerOpen}
-            thinking={thinking}
-            onSubmit={(input) => {
-              void requestSuggestions(input);
-            }}
-            trigger={
-              <button className="group flex w-full items-center justify-between rounded-3xl border border-dashed border-border bg-surface p-5 text-start transition-colors hover:border-primary/50">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full airo-gradient text-primary-foreground">
-                    <Sparkles className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <div className="text-sm font-semibold">{t("drawer.title")}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {stage === "flights"
-                        ? t("drawer.placeholder")
-                        : stage === "hotels"
-                          ? t("drawer.placeholder.hotel")
-                          : t("drawer.placeholder.attraction")}
+        {/* On-device AI loader (shown until model is ready) */}
+        {!localAgent.isReady && (
+          <div className="mb-8 airo-fade">
+            <ModelLoader
+              status={localAgent.status}
+              progress={localAgent.progress}
+              error={localAgent.error}
+              onLoad={() => void localAgent.load()}
+              modelLabel="Llama 3.2 3B"
+            />
+          </div>
+        )}
+
+        {/* Ready badge */}
+        {localAgent.isReady && (
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success airo-fade">
+            <Cpu className="h-3 w-3" />
+            {t("local.title")} · {t("local.subtitle")}
+          </div>
+        )}
+
+        {/* Drawer trigger — only after model is ready */}
+        {localAgent.isReady && (
+          <div className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto] airo-fade">
+            <AiroDrawer
+              stage={stage}
+              open={drawerOpen}
+              onOpenChange={setDrawerOpen}
+              thinking={thinking}
+              onSubmit={(input) => {
+                void requestSuggestions(input);
+              }}
+              trigger={
+                <button className="group flex w-full items-center justify-between rounded-3xl border border-dashed border-border bg-surface p-5 text-start transition-colors hover:border-primary/50">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full airo-gradient text-primary-foreground">
+                      <Sparkles className="h-4 w-4" />
+                    </span>
+                    <div>
+                      <div className="text-sm font-semibold">{t("drawer.title")}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {stage === "flights"
+                          ? t("drawer.placeholder")
+                          : stage === "hotels"
+                            ? t("drawer.placeholder.hotel")
+                            : t("drawer.placeholder.attraction")}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </button>
-            }
-          />
-          <Button
-            variant="outline"
-            onClick={refreshSuggestions}
-            disabled={thinking}
-            className="rounded-3xl h-auto px-5"
-            title="Get new AI picks"
-          >
-            <Wand2 className="me-2 h-4 w-4" />
-            New picks
-          </Button>
-        </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                </button>
+              }
+            />
+            <Button
+              variant="outline"
+              onClick={refreshSuggestions}
+              disabled={thinking}
+              className="rounded-3xl h-auto px-5"
+              title="Get new AI picks"
+            >
+              <Wand2 className="me-2 h-4 w-4" />
+              New picks
+            </Button>
+          </div>
+        )}
 
         {/* Thinking shimmer */}
         {thinking && options.length === 0 && (
@@ -425,10 +446,3 @@ function stageToType(s: Stage): "flight" | "hotel" | "attraction" {
   return s === "flights" ? "flight" : s === "hotels" ? "hotel" : "attraction";
 }
 
-function imagePromptFor(stage: Stage, o: AiroOption): string {
-  if (stage === "flights")
-    return `Cinematic editorial photo of ${o.subtitle ?? o.title}, golden hour, premium travel magazine style, no text`;
-  if (stage === "hotels")
-    return `Luxury hotel interior or facade in ${o.subtitle ?? o.title}, refined editorial photography, soft natural light, no text`;
-  return `Beautiful authentic photo of ${o.title} in ${o.subtitle ?? ""}, travel editorial style, no text`;
-}
