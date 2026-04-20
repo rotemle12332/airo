@@ -82,60 +82,53 @@ function PlanPage() {
   const currency = items[0]?.currency ?? "USD";
   const options = optionsByStage[stage];
 
+  // On-device AI agent (replaces edge function calls).
+  const localAgent = useLocalAgent(DEFAULT_LOCAL_MODEL);
+
   const requestSuggestions = async (
     input: { text: string; imageDataUrl?: string },
-    auto = false,
+    _auto = false,
   ) => {
+    if (!localAgent.isReady) {
+      toast.info("Activate the on-device AI first");
+      return;
+    }
+    if (input.imageDataUrl) {
+      // Image input is not supported by the small on-device model — let the
+      // user know but still continue with the text portion.
+      toast.message("Image input is ignored on the on-device model — using your text only.");
+    }
     setThinking(true);
     setOptionsByStage((prev) => ({ ...prev, [stage]: [] }));
     try {
-      const { data, error } = await supabase.functions.invoke("airo-suggest", {
-        body: {
-          stage,
-          text: input.text,
-          image_data_url: input.imageDataUrl,
-          auto,
-          preferences,
-          trip: {
-            origin: trip?.origin,
-            start_date: trip?.start_date,
-            end_date: trip?.end_date,
-            traveler_count: trip?.traveler_count,
-            destination: preferences?.destination,
-            existing_items: items.map((i) => ({
-              type: i.type,
-              title: i.title,
-              start_date: i.start_date,
-              end_date: i.end_date,
-            })),
-          },
+      const opts = await localAgent.generate({
+        stage,
+        text: input.text,
+        trip: {
+          origin: trip?.origin,
+          destination: preferences?.destination,
+          start_date: trip?.start_date,
+          end_date: trip?.end_date,
+          traveler_count: trip?.traveler_count,
+        },
+        preferences: {
+          styles: preferences?.styles,
+          vibe: preferences?.vibe,
+          companion: preferences?.companion,
+          with_kids: preferences?.with_kids,
+          group_size: preferences?.group_size ?? trip?.traveler_count ?? 1,
+          notes: preferences?.notes,
+          budget_min: preferences?.budget_min,
+          budget_max: preferences?.budget_max,
         },
       });
-      if (error) throw error;
-      const opts = (data?.options ?? []) as AiroOption[];
-      setOptionsByStage((prev) => ({ ...prev, [stage]: opts }));
-      // Generate images in background per option
-      void Promise.all(
-        opts.map((o, idx) =>
-          supabase.functions
-            .invoke("airo-image", {
-              body: { prompt: imagePromptFor(stage, o), id: o.id },
-            })
-            .then(({ data: imgData }) => {
-              if (imgData?.image_url) {
-                setOptionsByStage((prev) => ({
-                  ...prev,
-                  [stage]: prev[stage].map((c, i) =>
-                    i === idx ? { ...c, image_url: imgData.image_url } : c,
-                  ),
-                }));
-              }
-            })
-            .catch(() => {}),
-        ),
-      );
+      setOptionsByStage((prev) => ({
+        ...prev,
+        [stage]: opts as AiroOption[],
+      }));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "AI request failed");
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "On-device AI failed");
     } finally {
       setThinking(false);
     }
