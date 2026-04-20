@@ -446,10 +446,3 @@ function stageToType(s: Stage): "flight" | "hotel" | "attraction" {
   return s === "flights" ? "flight" : s === "hotels" ? "hotel" : "attraction";
 }
 
-function imagePromptFor(stage: Stage, o: AiroOption): string {
-  if (stage === "flights")
-    return `Cinematic editorial photo of ${o.subtitle ?? o.title}, golden hour, premium travel magazine style, no text`;
-  if (stage === "hotels")
-    return `Luxury hotel interior or facade in ${o.subtitle ?? o.title}, refined editorial photography, soft natural light, no text`;
-  return `Beautiful authentic photo of ${o.title} in ${o.subtitle ?? ""}, travel editorial style, no text`;
-}
