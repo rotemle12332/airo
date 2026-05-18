@@ -124,9 +124,9 @@ function HomePage() {
                     </div>
 
                     <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                      {trip.destination ? (
+                      {trip.origin ? (
                         <span className="mb-1 block text-[10px] font-medium uppercase tracking-[0.18em] text-white/85">
-                          {trip.destination}
+                          {trip.origin}
                         </span>
                       ) : null}
                       <h3 className="font-serif-display text-2xl font-semibold drop-shadow-md">
