@@ -1,7 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
@@ -42,6 +42,10 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-amber: var(--amber);
+  --color-amber-foreground: var(--amber-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -104,6 +108,14 @@
   --success: oklch(0.7 0.15 155);
   --success-foreground: oklch(0.12 0.02 160);
 
+  /* Tertiary: vivid purple #632ecd */
+  --tertiary: oklch(0.47 0.24 295);
+  --tertiary-foreground: oklch(0.99 0.003 250);
+
+  /* Amber accent: warm #fea619 */
+  --amber: oklch(0.78 0.17 70);
+  --amber-foreground: oklch(0.22 0.05 60);
+
   --border: oklch(0.92 0.008 250);
   --input: oklch(0.94 0.008 250);
   --ring: oklch(0.58 0.18 250);
@@ -157,6 +169,12 @@
   --success: oklch(0.75 0.15 155);
   --success-foreground: oklch(0.12 0.02 160);
 
+  --tertiary: oklch(0.62 0.22 295);
+  --tertiary-foreground: oklch(0.12 0.02 260);
+
+  --amber: oklch(0.8 0.16 70);
+  --amber-foreground: oklch(0.15 0.04 60);
+
   --border: oklch(1 0 0 / 0.08);
   --input: oklch(1 0 0 / 0.12);
   --ring: oklch(0.7 0.17 245);
@@ -201,10 +219,33 @@
   }
 
   .font-serif-display {
-    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-family: "Noto Serif", "Playfair Display", Georgia, "Times New Roman", serif;
     font-feature-settings: "lnum" 1, "kern" 1;
     letter-spacing: -0.01em;
   }
+  .font-display {
+    font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Glassmorphism + ambient utilities */
+@layer utilities {
+  .airo-glass {
+    background: color-mix(in oklab, var(--color-card) 70%, transparent);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid color-mix(in oklab, var(--color-foreground) 8%, transparent);
+    box-shadow: 0 8px 32px oklch(0 0 0 / 0.08);
+  }
+  .airo-glass-strong {
+    background: color-mix(in oklab, var(--color-card) 82%, transparent);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid color-mix(in oklab, var(--color-foreground) 10%, transparent);
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
 /* Airo utility classes */
