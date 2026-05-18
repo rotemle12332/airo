@@ -2,15 +2,14 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Eye, EyeOff, Mail, Lock, User as UserIcon, ArrowLeft } from "lucide-react";
-import { AiroLogo } from "@/components/AiroLogo";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { OAuthRow } from "@/components/OAuthRow";
-import { Button } from "@/components/ui/button";
 import { LangToggle } from "@/components/LangToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
+import ambientSunset from "@/assets/ambient-sunset.jpg";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -35,9 +34,7 @@ function AuthPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      navigate({ to: (search.redirect as "/") ?? "/" });
-    }
+    if (user) navigate({ to: (search.redirect as "/") ?? "/" });
   }, [user, navigate, search.redirect]);
 
   const submit = async (e: React.FormEvent) => {
@@ -56,16 +53,12 @@ function AuthPage() {
         if (error) throw error;
         toast.success("Account created — welcome to Airo");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
       navigate({ to: (search.redirect as "/") ?? "/" });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Authentication failed";
-      toast.error(msg);
+      toast.error(err instanceof Error ? err.message : "Authentication failed");
     } finally {
       setSubmitting(false);
     }
@@ -74,177 +67,176 @@ function AuthPage() {
   const isSignup = mode === "signup";
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background">
-      {/* Subtle aurora glow background */}
+    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden">
+      {/* Ambient sunset background */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-60 dark:opacity-40"
-        style={{
-          background:
-            "radial-gradient(60% 40% at 50% 0%, color-mix(in oklab, var(--color-primary) 18%, transparent) 0%, transparent 70%)",
-        }}
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${ambientSunset})` }}
       />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-32 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full opacity-30 dark:opacity-20"
-        style={{
-          background:
-            "radial-gradient(closest-side, color-mix(in oklab, var(--color-primary-glow) 35%, transparent), transparent)",
-          filter: "blur(40px)",
-        }}
-      />
+      <div aria-hidden className="absolute inset-0 z-0 bg-black/15 backdrop-blur-[3px] dark:bg-black/45" />
 
-      {/* Top bar */}
-      <header className="relative z-10 mx-auto flex h-16 w-full max-w-md items-center justify-between px-6">
-        {isSignup ? (
-          <span className="h-9 w-9" />
-        ) : (
-          <Link
-            to="/"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card hover:bg-surface"
-            aria-label={t("common.back")}
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-        )}
-        <div className="flex items-center gap-1">
+      {/* Top toolbar */}
+      <header className="absolute inset-x-0 top-0 z-20 mx-auto flex h-16 w-full max-w-[460px] items-center justify-between px-5">
+        <Link
+          to="/"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/30 text-foreground backdrop-blur-md hover:bg-white/50"
+          aria-label={t("common.back")}
+        >
+          <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+        </Link>
+        <div className="flex items-center gap-1 rounded-full border border-white/40 bg-white/30 px-1 py-1 backdrop-blur-md">
           <LangToggle />
           <ThemeToggle />
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto flex w-full max-w-md flex-col items-center px-6 pb-16 pt-6">
-        {/* Brand */}
-        <AiroLogo size={56} withTagline />
+      {/* Glass card */}
+      <div className="relative z-10 w-full max-w-[420px] px-5 py-10 airo-rise">
+        <div className="airo-glass-strong rounded-[28px] p-6 sm:p-8">
+          {/* Header */}
+          <div className="mb-6 flex flex-col items-center text-center">
+            <h2 className="font-serif-display text-3xl font-bold italic tracking-tighter text-primary">
+              Airo
+            </h2>
+            <h1 className="mt-3 font-serif-display text-2xl font-semibold text-foreground">
+              {isSignup ? t("auth.createAccount") : t("auth.welcomeBack")}
+            </h1>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              {isSignup ? t("auth.startJourney") : t("auth.continueJourney")}
+            </p>
+          </div>
 
-        {/* Title */}
-        <h1 className="mt-10 text-2xl font-semibold tracking-tight text-foreground">
-          {isSignup ? t("auth.createAccount") : t("auth.welcomeBack")}
-        </h1>
-        <p className="mt-1.5 text-center text-sm text-muted-foreground">
-          {isSignup ? t("auth.startJourney") : t("auth.continueJourney")}
-        </p>
+          {/* Form */}
+          <form onSubmit={submit} className="space-y-4">
+            {isSignup ? (
+              <Field
+                label={t("auth.fullName")}
+                placeholder="Jane Doe"
+                type="text"
+                value={displayName}
+                onChange={setDisplayName}
+                autoComplete="name"
+              />
+            ) : null}
 
-        {/* Form */}
-        <form onSubmit={submit} className="mt-8 w-full space-y-3">
-          {isSignup ? (
-            <FieldInput
-              icon={<UserIcon className="h-4 w-4" />}
-              type="text"
-              placeholder={t("auth.fullName")}
-              value={displayName}
-              onChange={setDisplayName}
-              autoComplete="name"
+            <Field
+              label={t("auth.emailAddress")}
+              placeholder="name@example.com"
+              type="email"
+              value={email}
+              onChange={setEmail}
+              autoComplete="email"
+              required
             />
-          ) : null}
 
-          <FieldInput
-            icon={<Mail className="h-4 w-4" />}
-            type="email"
-            placeholder={t("auth.emailAddress")}
-            value={email}
-            onChange={setEmail}
-            autoComplete="email"
-            required
-          />
-
-          <div className="relative">
-            <FieldInput
-              icon={<Lock className="h-4 w-4" />}
+            <Field
+              label={t("auth.password")}
+              placeholder="••••••••"
               type={showPassword ? "text" : "password"}
-              placeholder={isSignup ? t("auth.createPassword") : t("auth.password")}
               value={password}
               onChange={setPassword}
               autoComplete={isSignup ? "new-password" : "current-password"}
               minLength={6}
               required
+              rightSlot={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="text-muted-foreground transition hover:text-foreground"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              }
+              trailingLink={
+                !isSignup ? (
+                  <button
+                    type="button"
+                    onClick={() => toast.info("Password reset is coming soon.")}
+                    className="text-[11px] font-medium text-primary hover:underline"
+                  >
+                    {t("auth.forgotPassword")}
+                  </button>
+                ) : null
+              }
             />
+
             <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              className="absolute end-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              type="submit"
+              disabled={submitting}
+              className="relative mt-2 w-full overflow-hidden rounded-full bg-primary px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-primary-foreground shadow-[0_8px_20px_-4px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all hover:opacity-95 active:scale-[0.98] disabled:opacity-60"
             >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/15 to-transparent" />
+              {submitting
+                ? t("common.loading") + "…"
+                : isSignup
+                  ? t("auth.createAccountCta")
+                  : t("auth.logIn")}
             </button>
-          </div>
-
-          {!isSignup ? (
-            <div className="flex justify-end pt-1">
-              <button
-                type="button"
-                className="text-xs font-medium text-primary hover:underline"
-                onClick={() => toast.info("Password reset is coming soon.")}
-              >
-                {t("auth.forgotPassword")}
-              </button>
-            </div>
-          ) : null}
-
-          <Button
-            type="submit"
-            disabled={submitting}
-            className="mt-2 h-14 w-full rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 transition hover:bg-primary/90 disabled:opacity-60"
-          >
-            {submitting
-              ? t("common.loading") + "…"
-              : isSignup
-                ? t("auth.createAccountCta")
-                : t("auth.logIn")}
-          </Button>
+          </form>
 
           {/* Divider */}
-          <div className="relative py-3">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border/60" />
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-background px-3 text-xs text-muted-foreground">
-                {t("auth.orContinueWith")}
-              </span>
-            </div>
+          <div className="my-5 flex items-center gap-3">
+            <span className="h-px flex-1 bg-border/60" />
+            <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              {t("auth.orContinueWith")}
+            </span>
+            <span className="h-px flex-1 bg-border/60" />
           </div>
 
           <OAuthRow disabled={submitting} />
-        </form>
 
-        {/* Switch mode */}
-        <p className="mt-8 text-sm text-muted-foreground">
-          {isSignup ? t("auth.haveAccount") : t("auth.noAccount")}{" "}
-          <button
-            type="button"
-            onClick={() => setMode(isSignup ? "signin" : "signup")}
-            className="font-semibold text-primary hover:underline"
-          >
-            {isSignup ? t("auth.logIn") : t("auth.signUp")}
-          </button>
-        </p>
-      </main>
-    </div>
+          {/* Switch */}
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            {isSignup ? t("auth.haveAccount") : t("auth.noAccount")}{" "}
+            <button
+              type="button"
+              onClick={() => setMode(isSignup ? "signin" : "signup")}
+              className="font-semibold text-primary hover:underline"
+            >
+              {isSignup ? t("auth.logIn") : t("auth.signUp")}
+            </button>
+          </p>
+        </div>
+      </div>
+    </main>
   );
 }
 
-function FieldInput({
-  icon,
+function Field({
+  label,
   value,
   onChange,
+  rightSlot,
+  trailingLink,
   ...rest
 }: {
-  icon: React.ReactNode;
+  label: string;
   value: string;
   onChange: (v: string) => void;
+  rightSlot?: React.ReactNode;
+  trailingLink?: React.ReactNode;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange">) {
   return (
-    <div className="relative">
-      <span className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-        {icon}
-      </span>
-      <input
-        {...rest}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-14 w-full rounded-2xl border border-border/60 bg-card ps-11 pe-4 text-sm text-foreground placeholder:text-muted-foreground/80 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-      />
+    <div className="space-y-1.5">
+      <div className="ms-2 flex items-center justify-between">
+        <label className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+          {label}
+        </label>
+        {trailingLink}
+      </div>
+      <div className="relative">
+        <input
+          {...rest}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-12 w-full rounded-xl border border-border/60 bg-card/70 px-4 text-sm text-foreground placeholder:text-muted-foreground/70 backdrop-blur-md transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25"
+        />
+        {rightSlot ? (
+          <span className="absolute end-3 top-1/2 -translate-y-1/2">{rightSlot}</span>
+        ) : null}
+      </div>
     </div>
   );
 }

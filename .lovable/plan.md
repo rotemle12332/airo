@@ -1,77 +1,49 @@
+## מיפוי המסכים מה-HTML למסכי האפליקציה
 
-# Airo — AI Travel Engineering Platform
+ה-HTML שהעלית מכיל **13 מסכים מעוצבים** (Material 3 + Glassmorphism, פונטים Plus Jakarta Sans + Noto Serif, פלטה כחול/סגול/כתום). הנה איך אני מציע למפות אותם:
 
-A premium, minimalist trip planner with a "silent" AI engine, real photos, live pricing, and branded PDF exports.
+| # | מסך ב-HTML | יעד באפליקציה | מצב נוכחי |
+|---|-----------|--------------|-----------|
+| 1 | Welcome Back (Login) | `src/routes/auth.tsx` (mode=login) | קיים – לעצב מחדש |
+| 2 | Create Account | `src/routes/auth.tsx` (mode=signup) | קיים – לעצב מחדש |
+| 3 | Home - Launch Journey + Past Journeys | `src/routes/index.tsx` | קיים – לעצב מחדש |
+| 4 | Step 1: When Are You Flying? (תאריכים) | `trip.new.tsx` – שלב dates | קיים בתוך wizard |
+| 5 | Step 2: Where to Go? (יעד + carousel) | `trip.new.tsx` – שלב destination | קיים |
+| 6 | Step 3: Travel Style (Luxury/Adventure/Foodie…) | `trip.new.tsx` – שלב style | חדש – להוסיף |
+| 7 | Step 4: Traveling With? (Solo/Couple/Family) | `trip.new.tsx` – שלב travelers | קיים |
+| 8 | Step 5: Travel Vibe (Relaxed→YOLO) | `trip.new.tsx` – שלב vibe | חדש – להוסיף |
+| 9 | Step 6: Budget Range (סליידר) | `trip.new.tsx` – שלב budget | קיים |
+| 10 | Select Departure & Arrival (From/To) | `trip.new.tsx` – שלב route | חדש – להוסיף |
+| 11 | Select Flights (כרטיסי טיסה) | `trip.$tripId.plan.tsx` – stage=flights | קיים |
+| 12 | Select Hotel (Bento + Glass) | `trip.$tripId.plan.tsx` – stage=hotels | קיים |
+| 13 | Select Attractions (Bento + AI bubble) | `trip.$tripId.plan.tsx` – stage=attractions | קיים |
 
-## Tech Foundation
-- **Lovable Cloud**: Auth (email/password) + database for users, trips, and trip items
-- **Lovable AI Gateway**: Vision-capable model (`google/gemini-2.5-flash`) for text + image analysis
-- **AI image generation**: `google/gemini-2.5-flash-image` to produce authentic-looking destination/hotel/flight imagery on demand (cached per item)
-- **Server functions** for AI calls and PDF generation
-- **i18n**: Auto RTL/LTR based on browser language (Hebrew/English)
-- **Theming**: Dynamic dark/light following device preference, "Airo Blue" accent, 24px+ corner radius throughout
+## גישה (כיצד אני מתכוון לבצע)
 
-## Auth & Accounts
-- Email/password signup + login (`/auth`)
-- `profiles` table (display name, avatar, language preference)
-- `user_roles` table (separate from profiles, with `has_role` security definer function)
-- Protected routes for trip creation/management; public route for shared QR view
+1. **טוקנים גלובליים תחילה** — להעביר את פלטת הצבעים והפונטים מה-HTML ל-`src/styles.css` (Plus Jakarta Sans + Noto Serif, primary `#004ac6`, accent כתום `#fea619`, סגול `#632ecd`) ולשמור במערכת tokens. ככה כל המסכים יראו אחיד מיד.
+2. **שכבת shell משותפת** — TopAppBar + Progress Stepper + BottomNav שחוזרים בכל מסך → להוציא ל-`src/components/` (`TopAppBar.tsx`, `WizardProgress.tsx`, `BottomNav.tsx`). מבטיח עקביות ומשתמש בקוד הקיים של `StageProgress`.
+3. **התאמת מסכים אחד-אחד** לפי הסדר:
+   - Auth (login + signup) → state ל-Supabase auth שכבר קיים
+   - Index/Home → לטעון את `trips` של המשתמש מ-Supabase ולהציג כ-Past Journeys
+   - Trip wizard → להחליף את ה-UI של כל שלב, לשמור את ה-state machine הקיים. שלבים חדשים (Style/Vibe/Route) ירחיבו את ה-schema של `trip_brief`.
+   - Plan stages (flights/hotels/attractions) → להחליף את עיצוב הכרטיסים אבל לשמר את ה-hook ל-`useLocalAgent` (WebLLM) שהוספנו.
+4. **שמירה על פונקציונליות**: כל ה-logic הקיים (auth, Supabase, WebLLM local agent, i18n he/en + RTL, שמירת trip, share token, PDF) נשאר. רק שכבת ה-UI משתנה.
+5. **RTL**: המסכים ב-HTML הם LTR בלבד. אדאג שכל הקלאסים יהיו logical (`ps-`/`pe-`/`start-`/`end-`) כדי שהמצב העברי ימשיך לעבוד.
+6. **תמונות**: המסכים משתמשים בתמונות Hero מ-Unsplash/placeholders. אשתמש ב-`imagegen` ליצירת תמונות מותג עקביות עבור hero ב-index ו-auth, ולמקומות שאר אשתמש בתמונות שכבר במסכים.
 
-## Routes
-- `/` — Home: Airo logo, "Past Trips" gallery (immersive cards), single "Launch New Journey" CTA
-- `/auth` — Sign up / log in
-- `/trip/new` — Initial parameters (origin, dates, travelers count)
-- `/trip/$tripId/plan` — Main workflow with top progress bar (Flights → Hotels → Attractions), the Airo Drawer, basket items, floating Live Total
-- `/trip/$tripId/review` — Vertical timeline view + "Export Airo Itinerary" button
-- `/shared/$shareToken` — Public read-only itinerary view (QR target)
+## נושאים טכניים שכדאי לדעת
 
-## The Airo Drawer (Silent AI)
-- Pull-up bottom sheet with physics-based animation
-- Clean text input ("Direct flights to Japan in March", "Near Shinjuku, luxury vibe")
-- Prominent image drop zone — uploaded photos analyzed by vision AI to identify locations
-- Subtle "thinking" animation (no chat bubbles, no conversation UI)
-- Returns 4–6 option cards with AI-generated authentic imagery, ratings, prices
-- "Best Value" badge on items priced below the monthly average
+- **Material Symbols Outlined** ב-HTML → אני לא אטען font משלוח חיצוני; אמיר את האייקונים ל-`lucide-react` שכבר מותקן.
+- **CDN Tailwind config** ב-HTML → לא נעתיק אותו; הצבעים יהפכו ל-CSS variables ב-`src/styles.css` (פורמט oklch) ויהיו זמינים דרך semantic tokens (`bg-primary`, `text-on-surface` וכו').
+- ה-wizard כיום עם X שלבים — נצטרך להוסיף את Style, Vibe, ו-From/To. זה דורש הוספת שדות ל-state ולעמודות ב-`trips` (migration קצר).
+- בלי דחיפת רעיונות שכבר נדחו: ה-AI נשאר **לוקאלי בלבד** (WebLLM), בלי קריאות ענן.
 
-## Trip Workflow
-**Phase 1 — Flights** (multi-leg supported): Add outbound + return + stopovers to basket
-**Phase 2 — Hotels** (multi-destination): Each hotel gets its own check-in/check-out dates
-**Phase 3 — Attractions**: Suggested by hotel proximity + travel dates
+## מה לא בתכולה
 
-Tapping any card expands to immersive full-screen detail. Add-to-basket updates the floating Live Total instantly.
+- שינוי logic של AI / Supabase / auth flow.
+- הוספת מסכים שאינם ב-HTML (settings, profile וכו').
+- תרגום הקופי החדש מה-HTML — אעביר את כל הטקסטים החדשים ל-`i18n.ts` עם he+en.
 
-## Final Review & PDF Export
-- Vertical timeline plotting flights, hotel stays, and scheduled attractions in chronological order
-- "Export Airo Itinerary" generates a branded PDF (server-side) with:
-  - Airo logo + cover
-  - Timeline layout
-  - Real photos for every selected item
-  - Updated prices + booking links
-  - **QR code** linking to `/shared/$shareToken` so others can import the trip into their Airo account
+## האם להמשיך?
 
-## Database Schema (Lovable Cloud)
-- `profiles` — user info
-- `user_roles` — separate roles table with `has_role()` security definer
-- `trips` — id, owner, title, origin, dates, traveler_count, status, share_token
-- `trip_items` — trip_id, type (flight/hotel/attraction), payload JSON, image_url, price, start_date, end_date, sort_order
-- `trip_collaborators` — for QR-imported viewers
-
-## Design System
-- **Light**: white + light-grey layered surfaces
-- **Dark**: charcoal/midnight luxury palette
-- **Accent**: Airo Blue for progress bar, price tags, CTAs
-- **Radius**: 24px+ on all components (cards, buttons, inputs, drawer)
-- **Typography**: clean sans-serif with strong hierarchy
-- **Motion**: smooth, physics-based drawer + stage transitions
-
-## Build Order
-1. Foundation: design tokens (light/dark, Airo Blue, 24px radius), i18n RTL/LTR setup, base layout
-2. Auth + profiles + user_roles schema
-3. Home screen with Past Trips gallery
-4. Trip creation + database schema for trips/items
-5. Planning workflow shell (progress bar, basket, Live Total)
-6. Airo Drawer UI + AI server function (text + image analysis)
-7. AI image generation for cards (cached per item)
-8. Flights → Hotels → Attractions stages
-9. Review timeline screen
-10. PDF export server function with QR + shared trip route
+זו עבודה רחבה (כ-13 מסכים + טוקנים + migration קטן). אם תאשר, אבצע בסדר הזה: tokens → shell components → auth → index → wizard → plan. תוכל לעצור בכל שלב ולומר "מספיק" או "תקפוץ ישר ל-X".
