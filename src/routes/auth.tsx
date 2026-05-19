@@ -165,7 +165,7 @@ function AuthPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="relative mt-2 w-full overflow-hidden rounded-full bg-primary px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-primary-foreground shadow-[0_8px_20px_-4px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all hover:opacity-95 active:scale-[0.98] disabled:opacity-60"
+              className="relative mt-2 w-full overflow-hidden rounded-full bg-primary px-6 py-3.5 text-sm font-semibold uppercase tracking-[0.12em] text-primary-foreground shadow-[0_8px_20px_-4px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all hover:opacity-95 active:scale-[0.98] disabled:opacity-60 airo-button-shimmer airo-press-deep airo-glow-hover"
             >
               <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/15 to-transparent" />
               {submitting

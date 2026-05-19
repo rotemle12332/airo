@@ -86,6 +86,9 @@ function RootComponent() {
   return (
     <I18nProvider>
       <AuthProvider>
+        <a href="#main-content" className="airo-skip-link">
+          Skip to content
+        </a>
         <Outlet />
         <Toaster position="top-center" />
       </AuthProvider>

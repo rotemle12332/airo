@@ -577,16 +577,16 @@ function NewTripWizard() {
           {step < TOTAL_STEPS ? (
             <Button
               onClick={next}
-              className="h-14 w-full rounded-2xl airo-gradient text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-95 transition"
+              className="h-14 w-full rounded-2xl airo-gradient text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-95 transition airo-button-shimmer airo-press-deep airo-arrow-go"
             >
               {t("wizard.next")}
-              <ArrowRight className="ms-1 h-4 w-4" />
+              <ArrowRight className="ms-1 h-4 w-4 airo-arrow" />
             </Button>
           ) : (
             <Button
               onClick={submit}
               disabled={submitting}
-              className="h-16 w-full flex-col rounded-2xl airo-gradient text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-95 transition"
+              className="h-16 w-full flex-col rounded-2xl airo-gradient text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-95 transition airo-button-shimmer airo-press-deep airo-pulse-glow"
             >
               <span>{submitting ? t("common.loading") + "…" : t("wizard.step6.cta") + " ✨"}</span>
               {!submitting && (

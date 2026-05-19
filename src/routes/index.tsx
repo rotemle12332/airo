@@ -39,20 +39,23 @@ function HomePage() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      {/* Ambient coastal background */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
+      {/* Ambient coastal background + animated blobs */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <img
           src={ambientCoast}
           alt=""
           className="h-full w-full object-cover opacity-60 dark:opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/65 to-background" />
+        <div className="airo-blob airo-blob-1 h-[360px] w-[360px] -top-24 -start-24" />
+        <div className="airo-blob airo-blob-2 h-[320px] w-[320px] top-1/3 -end-24" />
+        <div className="airo-blob airo-blob-3 h-[280px] w-[280px] bottom-0 start-1/3" />
       </div>
 
       <div className="relative z-10">
         <AppHeader />
 
-        <main className="mx-auto w-full max-w-6xl px-5 pb-32 pt-10 sm:pt-16">
+        <main id="main-content" className="mx-auto w-full max-w-6xl px-5 pb-32 pt-10 sm:pt-16">
           {/* Hero */}
           <section className="mx-auto max-w-2xl text-center">
             <h1 className="font-serif-display text-4xl font-bold leading-[1.1] tracking-tight text-foreground drop-shadow-sm sm:text-5xl md:text-6xl airo-rise">
@@ -62,17 +65,17 @@ function HomePage() {
                 <>Effortless AI Travel<br />Engineering</>
               )}
             </h1>
-            <p className="mx-auto mt-5 max-w-md text-balance text-base text-muted-foreground sm:text-lg">
+            <p className="mx-auto mt-5 max-w-md text-balance text-base text-muted-foreground sm:text-lg airo-fade-up" style={{ animationDelay: "120ms" }}>
               {lang === "he"
                 ? "אוצרות חכמה למסע הבא שלכם."
                 : "Intelligent curation for your next extraordinary escape."}
             </p>
 
             {/* Primary FAB pill */}
-            <div className="mt-10 flex justify-center">
+            <div className="mt-10 flex justify-center airo-spring-in" style={{ animationDelay: "240ms" }}>
               <button
                 onClick={launch}
-                className="group relative flex h-20 w-72 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground shadow-[0_12px_28px_-8px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-8px_color-mix(in_oklab,var(--color-primary)_65%,transparent)] active:scale-[0.97] airo-pulse-glow"
+                className="group relative flex h-20 w-72 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground shadow-[0_12px_28px_-8px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-8px_color-mix(in_oklab,var(--color-primary)_65%,transparent)] active:scale-[0.97] airo-pulse-glow airo-button-shimmer airo-press-deep"
               >
                 <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
                 <Plus className="me-3 h-7 w-7 transition-transform duration-500 group-hover:rotate-90" strokeWidth={1.5} />
@@ -101,13 +104,13 @@ function HomePage() {
                 </span>
               </div>
 
-              <div className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-6 pt-2">
+              <div className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-6 pt-2 airo-stagger">
                 {trips.map((trip) => (
                   <Link
                     key={trip.id}
                     to="/trip/$tripId/plan"
                     params={{ tripId: trip.id }}
-                    className="group relative h-[380px] w-72 shrink-0 snap-center cursor-pointer overflow-hidden rounded-3xl border border-border/40 airo-glass airo-magnet"
+                    className="group relative h-[380px] w-72 shrink-0 snap-center cursor-pointer overflow-hidden rounded-3xl border border-border/40 airo-glass airo-card-tilt airo-fade-up"
                   >
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
