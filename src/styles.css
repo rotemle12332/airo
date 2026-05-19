@@ -202,19 +202,20 @@
 
   html {
     color-scheme: light dark;
+    scroll-behavior: smooth;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    font-family: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display",
       "Segoe UI", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   [dir="rtl"] body {
-    font-family: "Heebo", -apple-system, BlinkMacSystemFont, "Inter", system-ui,
+    font-family: "Heebo", -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", system-ui,
       sans-serif;
   }
 
@@ -226,6 +227,45 @@
   .font-display {
     font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
     letter-spacing: -0.01em;
+  }
+
+  :focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-primary) 80%, transparent);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-primary) 35%, transparent);
+    color: var(--color-foreground);
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--color-primary) 30%, transparent);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklab, var(--color-primary) 50%, transparent);
+  }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  .airo-skip-link {
+    position: fixed;
+    top: -100px;
+    inset-inline-start: 16px;
+    z-index: 100;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 24px -8px color-mix(in oklab, var(--color-primary) 50%, transparent);
+    transition: top 0.25s ease;
+  }
+  .airo-skip-link:focus-visible {
+    top: 16px;
+    outline: 2px solid var(--color-background);
+    outline-offset: 2px;
   }
 }
 
