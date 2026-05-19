@@ -39,20 +39,23 @@ function HomePage() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      {/* Ambient coastal background */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
+      {/* Ambient coastal background + animated blobs */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <img
           src={ambientCoast}
           alt=""
           className="h-full w-full object-cover opacity-60 dark:opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/65 to-background" />
+        <div className="airo-blob airo-blob-1 h-[360px] w-[360px] -top-24 -start-24" />
+        <div className="airo-blob airo-blob-2 h-[320px] w-[320px] top-1/3 -end-24" />
+        <div className="airo-blob airo-blob-3 h-[280px] w-[280px] bottom-0 start-1/3" />
       </div>
 
       <div className="relative z-10">
         <AppHeader />
 
-        <main className="mx-auto w-full max-w-6xl px-5 pb-32 pt-10 sm:pt-16">
+        <main id="main-content" className="mx-auto w-full max-w-6xl px-5 pb-32 pt-10 sm:pt-16">
           {/* Hero */}
           <section className="mx-auto max-w-2xl text-center">
             <h1 className="font-serif-display text-4xl font-bold leading-[1.1] tracking-tight text-foreground drop-shadow-sm sm:text-5xl md:text-6xl airo-rise">
