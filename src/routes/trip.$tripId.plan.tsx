@@ -308,8 +308,13 @@ function PlanPage() {
         {/* Thinking shimmer */}
         {thinking && options.length === 0 && (
           <section className="mb-12">
-            <h2 className="mb-4 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-              Airo is curating for you…
+            <h2 className="mb-4 flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+              <span className="airo-shimmer-text">Airo is curating for you</span>
+              <span className="airo-typing-dots inline-flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              </span>
             </h2>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {[0, 1, 2].map((i) => (
