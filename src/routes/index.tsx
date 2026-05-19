@@ -65,17 +65,17 @@ function HomePage() {
                 <>Effortless AI Travel<br />Engineering</>
               )}
             </h1>
-            <p className="mx-auto mt-5 max-w-md text-balance text-base text-muted-foreground sm:text-lg">
+            <p className="mx-auto mt-5 max-w-md text-balance text-base text-muted-foreground sm:text-lg airo-fade-up" style={{ animationDelay: "120ms" }}>
               {lang === "he"
                 ? "אוצרות חכמה למסע הבא שלכם."
                 : "Intelligent curation for your next extraordinary escape."}
             </p>
 
             {/* Primary FAB pill */}
-            <div className="mt-10 flex justify-center">
+            <div className="mt-10 flex justify-center airo-spring-in" style={{ animationDelay: "240ms" }}>
               <button
                 onClick={launch}
-                className="group relative flex h-20 w-72 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground shadow-[0_12px_28px_-8px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-8px_color-mix(in_oklab,var(--color-primary)_65%,transparent)] active:scale-[0.97] airo-pulse-glow"
+                className="group relative flex h-20 w-72 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground shadow-[0_12px_28px_-8px_color-mix(in_oklab,var(--color-primary)_55%,transparent)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-8px_color-mix(in_oklab,var(--color-primary)_65%,transparent)] active:scale-[0.97] airo-pulse-glow airo-button-shimmer airo-press-deep"
               >
                 <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
                 <Plus className="me-3 h-7 w-7 transition-transform duration-500 group-hover:rotate-90" strokeWidth={1.5} />
@@ -104,13 +104,13 @@ function HomePage() {
                 </span>
               </div>
 
-              <div className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-6 pt-2">
+              <div className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-6 pt-2 airo-stagger">
                 {trips.map((trip) => (
                   <Link
                     key={trip.id}
                     to="/trip/$tripId/plan"
                     params={{ tripId: trip.id }}
-                    className="group relative h-[380px] w-72 shrink-0 snap-center cursor-pointer overflow-hidden rounded-3xl border border-border/40 airo-glass airo-magnet"
+                    className="group relative h-[380px] w-72 shrink-0 snap-center cursor-pointer overflow-hidden rounded-3xl border border-border/40 airo-glass airo-card-tilt airo-fade-up"
                   >
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
