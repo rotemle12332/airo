@@ -190,16 +190,17 @@ function ReviewPage() {
 
         {items.length > 0 && (
           <div className="mt-12 flex justify-center">
-            <Button
+            <button
               onClick={() => void exportPdf()}
               disabled={exporting}
-              className="rounded-full airo-gradient airo-glow h-14 px-8 text-base text-primary-foreground hover:opacity-95"
+              className="airo-pill h-14 px-8 text-base airo-button-shimmer airo-press-deep disabled:opacity-60"
             >
-              <Download className="me-2 h-5 w-5" />
+              <Download className="me-2 inline h-5 w-5" />
               {exporting ? t("review.exporting") + "…" : t("review.export")}
-            </Button>
+            </button>
           </div>
         )}
+
       </main>
     </div>
   );
