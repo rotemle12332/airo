@@ -575,27 +575,28 @@ function NewTripWizard() {
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border/40 bg-background/85 px-6 py-4 backdrop-blur-xl">
         <div className="mx-auto max-w-2xl">
           {step < TOTAL_STEPS ? (
-            <Button
+            <button
               onClick={next}
-              className="h-14 w-full rounded-2xl airo-gradient text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-95 transition airo-button-shimmer airo-press-deep airo-arrow-go"
+              className="airo-pill h-14 w-full text-base airo-button-shimmer airo-press-deep airo-arrow-go"
             >
               {t("wizard.next")}
-              <ArrowRight className="ms-1 h-4 w-4 airo-arrow" />
-            </Button>
+              <ArrowRight className="ms-2 inline h-4 w-4 airo-arrow" />
+            </button>
           ) : (
-            <Button
+            <button
               onClick={submit}
               disabled={submitting}
-              className="h-16 w-full flex-col rounded-2xl airo-gradient text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-95 transition airo-button-shimmer airo-press-deep airo-pulse-glow"
+              className="airo-pill h-16 w-full flex-col text-base airo-button-shimmer airo-press-deep airo-pulse-glow disabled:opacity-60"
             >
               <span>{submitting ? t("common.loading") + "…" : t("wizard.step6.cta") + " ✨"}</span>
               {!submitting && (
-                <span className="text-[11px] font-normal opacity-90">
+                <span className="block text-[11px] font-normal opacity-90">
                   {t("wizard.step6.ctaSub")}
                 </span>
               )}
-            </Button>
+            </button>
           )}
+
         </div>
       </div>
     </div>
