@@ -575,27 +575,28 @@ function NewTripWizard() {
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border/40 bg-background/85 px-6 py-4 backdrop-blur-xl">
         <div className="mx-auto max-w-2xl">
           {step < TOTAL_STEPS ? (
-            <Button
+            <button
               onClick={next}
-              className="h-14 w-full rounded-2xl airo-gradient text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-95 transition airo-button-shimmer airo-press-deep airo-arrow-go"
+              className="airo-pill h-14 w-full text-base airo-button-shimmer airo-press-deep airo-arrow-go"
             >
               {t("wizard.next")}
-              <ArrowRight className="ms-1 h-4 w-4 airo-arrow" />
-            </Button>
+              <ArrowRight className="ms-2 inline h-4 w-4 airo-arrow" />
+            </button>
           ) : (
-            <Button
+            <button
               onClick={submit}
               disabled={submitting}
-              className="h-16 w-full flex-col rounded-2xl airo-gradient text-base font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-95 transition airo-button-shimmer airo-press-deep airo-pulse-glow"
+              className="airo-pill h-16 w-full flex-col text-base airo-button-shimmer airo-press-deep airo-pulse-glow disabled:opacity-60"
             >
               <span>{submitting ? t("common.loading") + "…" : t("wizard.step6.cta") + " ✨"}</span>
               {!submitting && (
-                <span className="text-[11px] font-normal opacity-90">
+                <span className="block text-[11px] font-normal opacity-90">
                   {t("wizard.step6.ctaSub")}
                 </span>
               )}
-            </Button>
+            </button>
           )}
+
         </div>
       </div>
     </div>
@@ -615,31 +616,35 @@ function Step({
 }) {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div
-        className={cn(
-          "flex items-start gap-6",
-          heroImg ? "flex-col sm:flex-row sm:items-center" : "",
-        )}
-      >
+      {heroImg ? (
+        <>
+          <div className="airo-cinema aspect-[16/7] w-full">
+            <img src={heroImg} alt="" loading="lazy" />
+            <div className="airo-cinema-content absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md ring-1 ring-white/25">
+                <span className="h-1.5 w-1.5 rounded-full airo-rausch-bg" />
+                Airo · Curated
+              </span>
+              <h1 className="airo-prose-display mt-3 font-serif-display text-3xl font-semibold text-white sm:text-4xl">
+                {title}
+              </h1>
+              <p className="mt-1.5 max-w-xl text-sm text-white/85">{subtitle}</p>
+            </div>
+          </div>
+        </>
+      ) : (
         <div className="flex-1">
-          <h1 className="font-serif-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          <h1 className="airo-prose-display font-serif-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
             {title}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
         </div>
-        {heroImg && (
-          <img
-            src={heroImg}
-            alt=""
-            loading="lazy"
-            className="h-32 w-40 shrink-0 rounded-2xl object-cover sm:h-36 sm:w-44 airo-soft"
-          />
-        )}
-      </div>
+      )}
       {children}
     </div>
   );
 }
+
 
 function DateCard({
   icon,

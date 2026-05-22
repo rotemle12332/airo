@@ -24,6 +24,19 @@ export const Route = createFileRoute("/trip/$tripId/plan")({
   component: PlanPage,
 });
 
+const STAGE_HERO: Record<Stage, string> = {
+  flights:
+    "https://images.unsplash.com/photo-1556388158-158ea5ccacbd?auto=format&fit=crop&w=1600&q=80",
+  hotels:
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80",
+  attractions:
+    "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80",
+};
+function stageHeroFor(stage: Stage, _destination?: string) {
+  return STAGE_HERO[stage];
+}
+
+
 function PlanPage() {
   const { tripId } = Route.useParams();
   const { user, loading: authLoading } = useAuth();
@@ -213,31 +226,48 @@ function PlanPage() {
       <AppHeader />
 
       <main className="mx-auto w-full max-w-5xl px-6 pt-8">
-        {/* Trip header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="font-serif-display text-3xl font-semibold tracking-tight">
-              {trip?.title ?? "…"}
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {preferences?.destination || trip?.origin}
-              {trip?.start_date ? ` · ${new Date(trip.start_date).toLocaleDateString()}` : ""}
-              {trip?.traveler_count
-                ? ` · ${trip.traveler_count} ${trip.traveler_count === 1 ? "traveler" : "travelers"}`
-                : ""}
-            </p>
-          </div>
-          <Button asChild variant="ghost" size="sm" className="rounded-full">
-            <Link to="/trip/$tripId/review" params={{ tripId }}>
-              {t("basket.review")} <ArrowRight className="ms-1 h-4 w-4" />
+        {/* Cinematic stage hero (Apple full-bleed × Airbnb warmth) */}
+        <div className="airo-cinema aspect-[16/6] w-full mb-8">
+          <div
+            className="airo-cinema-bg"
+            style={{
+              backgroundImage: `url(${stageHeroFor(stage, preferences?.destination)})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <div className="airo-cinema-content absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 sm:p-8">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md ring-1 ring-white/25">
+                <span className="h-1.5 w-1.5 rounded-full airo-rausch-bg" />
+                {t(`stage.${stage}`)}
+              </span>
+              <h1 className="airo-prose-display mt-3 font-serif-display text-3xl font-semibold text-white sm:text-4xl">
+                {trip?.title ?? "…"}
+              </h1>
+              <p className="mt-1.5 text-sm text-white/85">
+                {preferences?.destination || trip?.origin}
+                {trip?.start_date ? ` · ${new Date(trip.start_date).toLocaleDateString()}` : ""}
+                {trip?.traveler_count
+                  ? ` · ${trip.traveler_count} ${trip.traveler_count === 1 ? "traveler" : "travelers"}`
+                  : ""}
+              </p>
+            </div>
+            <Link
+              to="/trip/$tripId/review"
+              params={{ tripId }}
+              className="hidden sm:inline-flex items-center gap-1 rounded-full bg-white/95 px-4 py-2 text-xs font-semibold text-foreground shadow hover:bg-white"
+            >
+              {t("basket.review")} <ArrowRight className="h-3 w-3" />
             </Link>
-          </Button>
+          </div>
         </div>
 
         {/* Progress */}
         <div className="mb-10 rounded-3xl border border-border/50 bg-card p-6 airo-soft">
           <StageProgress current={stage} onSelect={setStage} />
         </div>
+
 
         {/* On-device AI loader (shown until model is ready) */}
         {!localAgent.isReady && (
