@@ -94,8 +94,9 @@ function PlanPage() {
   const currency = items[0]?.currency ?? "USD";
   const options = optionsByStage[stage];
 
-  // On-device AI agent (replaces edge function calls).
-  const localAgent = useLocalAgent(DEFAULT_LOCAL_MODEL);
+  // In-browser deterministic curator (no model download, no network).
+  const localAgent = useLocalAgent();
+
 
   const requestSuggestions = async (
     input: { text: string; imageDataUrl?: string },
