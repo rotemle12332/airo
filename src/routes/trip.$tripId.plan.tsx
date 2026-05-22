@@ -268,31 +268,10 @@ function PlanPage() {
           <StageProgress current={stage} onSelect={setStage} />
         </div>
 
-
-        {/* On-device AI loader (shown until model is ready) */}
-        {!localAgent.isReady && (
-          <div className="mb-8 airo-fade">
-            <ModelLoader
-              status={localAgent.status}
-              progress={localAgent.progress}
-              error={localAgent.error}
-              onLoad={() => void localAgent.load()}
-              modelLabel="Llama 3.2 3B"
-            />
-          </div>
-        )}
-
-        {/* Ready badge */}
-        {localAgent.isReady && (
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success airo-fade">
-            <Cpu className="h-3 w-3" />
-            {t("local.title")} · {t("local.subtitle")}
-          </div>
-        )}
-
-        {/* Drawer trigger — only after model is ready */}
+        {/* In-browser curator — silent, no downloads */}
         {localAgent.isReady && (
           <div className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto] airo-fade">
+
             <AiroDrawer
               stage={stage}
               open={drawerOpen}
