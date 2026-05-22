@@ -85,30 +85,47 @@ function ReviewPage() {
           </Link>
         </Button>
 
-        <div className="mt-6 flex items-end justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">
-              {trip?.title ?? t("review.title")}
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {trip?.origin}
-              {trip?.start_date && ` · ${new Date(trip.start_date).toLocaleDateString()}`}
-              {trip?.end_date && ` – ${new Date(trip.end_date).toLocaleDateString()}`}
-            </p>
-          </div>
-          <div className="text-end">
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">
-              {t("basket.liveTotal")}
+        {/* Cinematic itinerary hero (Apple × Airbnb) */}
+        <div className="airo-cinema mt-6 aspect-[16/7] w-full">
+          <div
+            className="airo-cinema-bg"
+            style={{
+              backgroundImage:
+                "url(https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1600&q=80)",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <div className="airo-cinema-content absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6 sm:p-8">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md ring-1 ring-white/25">
+                <span className="h-1.5 w-1.5 rounded-full airo-rausch-bg" />
+                {t("review.title")}
+              </span>
+              <h1 className="airo-prose-display mt-3 font-serif-display text-3xl font-semibold text-white sm:text-4xl">
+                {trip?.title ?? t("review.title")}
+              </h1>
+              <p className="mt-1.5 text-sm text-white/85">
+                {trip?.origin}
+                {trip?.start_date && ` · ${new Date(trip.start_date).toLocaleDateString()}`}
+                {trip?.end_date && ` – ${new Date(trip.end_date).toLocaleDateString()}`}
+              </p>
             </div>
-            <div className="text-2xl font-semibold airo-gradient-text tabular-nums">
-              {new Intl.NumberFormat(lang === "he" ? "he-IL" : "en-US", {
-                style: "currency",
-                currency,
-                maximumFractionDigits: 0,
-              }).format(total)}
+            <div className="rounded-2xl bg-white/95 px-4 py-2 text-end shadow-lg">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                {t("basket.liveTotal")}
+              </div>
+              <div className="text-xl font-semibold airo-rausch tabular-nums">
+                {new Intl.NumberFormat(lang === "he" ? "he-IL" : "en-US", {
+                  style: "currency",
+                  currency,
+                  maximumFractionDigits: 0,
+                }).format(total)}
+              </div>
             </div>
           </div>
         </div>
+
 
         {items.length === 0 ? (
           <div className="mt-16 rounded-3xl border border-dashed border-border bg-surface p-12 text-center text-sm text-muted-foreground">
