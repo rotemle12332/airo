@@ -1,18 +1,17 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Sparkles, ArrowRight, Trash2, ExternalLink, Wand2, Cpu } from "lucide-react";
+import { Sparkles, ArrowRight, Trash2, ExternalLink, Wand2 } from "lucide-react";
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { StageProgress, type Stage } from "@/components/StageProgress";
 import { LiveTotal } from "@/components/LiveTotal";
 import { OptionCard, type AiroOption } from "@/components/OptionCard";
 import { AiroDrawer } from "@/components/AiroDrawer";
-import { ModelLoader } from "@/components/ModelLoader";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { useLocalAgent } from "@/hooks/useLocalAgent";
-import { DEFAULT_LOCAL_MODEL } from "@/lib/local-agent";
+
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import type { AiroPreferences } from "./trip.new";
@@ -95,8 +94,9 @@ function PlanPage() {
   const currency = items[0]?.currency ?? "USD";
   const options = optionsByStage[stage];
 
-  // On-device AI agent (replaces edge function calls).
-  const localAgent = useLocalAgent(DEFAULT_LOCAL_MODEL);
+  // In-browser deterministic curator (no model download, no network).
+  const localAgent = useLocalAgent();
+
 
   const requestSuggestions = async (
     input: { text: string; imageDataUrl?: string },
@@ -268,31 +268,10 @@ function PlanPage() {
           <StageProgress current={stage} onSelect={setStage} />
         </div>
 
-
-        {/* On-device AI loader (shown until model is ready) */}
-        {!localAgent.isReady && (
-          <div className="mb-8 airo-fade">
-            <ModelLoader
-              status={localAgent.status}
-              progress={localAgent.progress}
-              error={localAgent.error}
-              onLoad={() => void localAgent.load()}
-              modelLabel="Llama 3.2 3B"
-            />
-          </div>
-        )}
-
-        {/* Ready badge */}
-        {localAgent.isReady && (
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-medium text-success airo-fade">
-            <Cpu className="h-3 w-3" />
-            {t("local.title")} · {t("local.subtitle")}
-          </div>
-        )}
-
-        {/* Drawer trigger — only after model is ready */}
+        {/* In-browser curator — silent, no downloads */}
         {localAgent.isReady && (
           <div className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto] airo-fade">
+
             <AiroDrawer
               stage={stage}
               open={drawerOpen}
