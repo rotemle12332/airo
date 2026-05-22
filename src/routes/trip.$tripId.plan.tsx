@@ -24,6 +24,19 @@ export const Route = createFileRoute("/trip/$tripId/plan")({
   component: PlanPage,
 });
 
+const STAGE_HERO: Record<Stage, string> = {
+  flights:
+    "https://images.unsplash.com/photo-1556388158-158ea5ccacbd?auto=format&fit=crop&w=1600&q=80",
+  hotels:
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1600&q=80",
+  attractions:
+    "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80",
+};
+function stageHeroFor(stage: Stage, _destination?: string) {
+  return STAGE_HERO[stage];
+}
+
+
 function PlanPage() {
   const { tripId } = Route.useParams();
   const { user, loading: authLoading } = useAuth();
