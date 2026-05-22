@@ -615,31 +615,35 @@ function Step({
 }) {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div
-        className={cn(
-          "flex items-start gap-6",
-          heroImg ? "flex-col sm:flex-row sm:items-center" : "",
-        )}
-      >
+      {heroImg ? (
+        <>
+          <div className="airo-cinema aspect-[16/7] w-full">
+            <img src={heroImg} alt="" loading="lazy" />
+            <div className="airo-cinema-content absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md ring-1 ring-white/25">
+                <span className="h-1.5 w-1.5 rounded-full airo-rausch-bg" />
+                Airo · Curated
+              </span>
+              <h1 className="airo-prose-display mt-3 font-serif-display text-3xl font-semibold text-white sm:text-4xl">
+                {title}
+              </h1>
+              <p className="mt-1.5 max-w-xl text-sm text-white/85">{subtitle}</p>
+            </div>
+          </div>
+        </>
+      ) : (
         <div className="flex-1">
-          <h1 className="font-serif-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          <h1 className="airo-prose-display font-serif-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
             {title}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
         </div>
-        {heroImg && (
-          <img
-            src={heroImg}
-            alt=""
-            loading="lazy"
-            className="h-32 w-40 shrink-0 rounded-2xl object-cover sm:h-36 sm:w-44 airo-soft"
-          />
-        )}
-      </div>
+      )}
       {children}
     </div>
   );
 }
+
 
 function DateCard({
   icon,
